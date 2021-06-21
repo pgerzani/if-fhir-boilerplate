@@ -19,8 +19,6 @@
 
         $.when(pt, documents).done(function(patient, documents) {
           activeProvider = defaultProvider();
-          ret.resolve(activeProvider);
-
           var gender = patient.gender;
 
           var fname = '';
