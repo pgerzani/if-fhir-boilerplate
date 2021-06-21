@@ -37,7 +37,7 @@
           activePatient.fname = fname;
           activePatient.lname = lname;
 
-          ret.resolve(activePatient);
+          ret.resolve(activePatient, activeProvider);
         });
       } else {
         onError();
