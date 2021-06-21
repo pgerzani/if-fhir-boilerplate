@@ -15,12 +15,10 @@
                     type: 'DocumentReference'
                   });
 
-        $.when(user, pt, documents).fail(onError);
+        $.when(pt, documents).fail(onError);
 
-        $.when(user, pt, documents).done(function(provider, patient, documents) {
+        $.when(pt, documents).done(function(patient, documents) {
           activeProvider = defaultProvider();
-          activeProvider.fname = provider.fname;
-          activeProvider.lname = provider.lname;
           ret.resolve(activeProvider);
 
           var gender = patient.gender;
