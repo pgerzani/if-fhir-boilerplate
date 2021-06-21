@@ -10,12 +10,12 @@
     function onReady(smart)  {
       if (smart.hasOwnProperty('patient')) {
         var user = smart.user.read();
-        $.when(user, obv).fail(onError);
-        $.when(user, obv).done(function(provider, obv) {
-          retProvider = defaultProvider();
-          retProvider.fname = provider.fname;
-          retProvider.lname = provider.lname;
-          ret.resolve(retProvider);
+        $.when(user).fail(onError);
+        $.when(user).done(function(provider, obv) {
+          activeProvider = defaultProvider();
+          activeProvider.fname = provider.fname;
+          activeProvider.lname = provider.lname;
+          ret.resolve(activeProvider);
         });
         var patient = smart.patient;
         var pt = patient.read();
@@ -23,10 +23,9 @@
                     type: 'DocumentReference'
                   });
 
-        $.when(pt, obv).fail(onError);
+        $.when(pt, documents).fail(onError);
 
-        $.when(pt, obv).done(function(patient, obv) {
-          var byCodes = smart.byCodes(obv, 'code');
+        $.when(pt, documents).done(function(patient, documents) {
           var gender = patient.gender;
 
           var fname = '';
@@ -37,16 +36,13 @@
             lname = patient.name[0].family.join(' ');
           }
 
-          var height = byCodes('8302-2');
+          var activePatient = defaultPatient();
+          activePatient.birthdate = patient.birthDate;
+          activePatient.gender = gender;
+          activePatient.fname = fname;
+          activePatient.lname = lname;
 
-          var p = defaultPatient();
-          p.birthdate = patient.birthDate;
-          p.gender = gender;
-          p.fname = fname;
-          p.lname = lname;
-          p.height = getQuantityValueAndUnit(height[0]);
-
-          ret.resolve(p);
+          ret.resolve(activePatient);
         });
       } else {
         onError();
@@ -85,9 +81,12 @@
       return undefined;
     }
   }
-  window.drawVisualization = function(patient) {
+  window.drawVisualization = function(patient, provider) {
     $('#holder').show();
     $('#loading').hide();
+    $('#provider-fname').html(provider.fname);
+    $('#provider-lname').html(provider.lname);
+
     $('#patient-fname').html(patient.fname);
     $('#patient-lname').html(patient.lname);
     $('#patient-gender').html(patient.gender);
