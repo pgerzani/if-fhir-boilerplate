@@ -9,23 +9,20 @@
 
     function onReady(smart)  {
       if (smart.hasOwnProperty('patient')) {
+        var pt = smart.patient.read();
         var user = smart.user.read();
-        $.when(user).fail(onError);
-        $.when(user).done(function(provider, obv) {
-          activeProvider = defaultProvider();
-          activeProvider.fname = provider.fname;
-          activeProvider.lname = provider.lname;
-          ret.resolve(activeProvider);
-        });
-        var patient = smart.patient;
-        var pt = patient.read();
         var documents = smart.patient.api.fetchAll({
                     type: 'DocumentReference'
                   });
 
-        $.when(pt, documents).fail(onError);
+        $.when(user, pt, documents).fail(onError);
 
-        $.when(pt, documents).done(function(patient, documents) {
+        $.when(user, pt, documents).done(function(provider, patient, documents) {
+          activeProvider = defaultProvider();
+          activeProvider.fname = provider.fname;
+          activeProvider.lname = provider.lname;
+          ret.resolve(activeProvider);
+
           var gender = patient.gender;
 
           var fname = '';
