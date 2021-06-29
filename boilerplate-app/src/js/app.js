@@ -11,13 +11,13 @@
       if (smart.hasOwnProperty('patient')) {
         var pt = smart.patient.read();
         var user = smart.user.read();
-        var documents = smart.patient.api.fetchAll({
+/*        var documents = smart.patient.api.fetchAll({
                     type: 'DocumentReference'
                   });
+*/
+        $.when(pt).fail(onError);
 
-        $.when(pt, documents).fail(onError);
-
-        $.when(pt, documents).done(function(patient, documents) {
+        $.when(pt).done(function(patient, documents) {
           activeProvider = defaultProvider();
           var gender = patient.gender;
 
